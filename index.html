@@ -27,10 +27,10 @@
 
       <nav>
         <ul class="nav-links">
-          <li><a href="#historia" class="nav-link">Sobre Nosotros</a></li>
           <li><a href="#beneficios" class="nav-link">Beneficios</a></li>
-          <li><a href="#galeria" class="nav-link">Galería</a></li>
           <li><a href="#productos" class="nav-link">Productos</a></li>
+          <li><a href="#galeria" class="nav-link">Galería</a></li>
+          <li><a href="#historia" class="nav-link">Sobre Nosotros</a></li>
           <li><a href="#lead-form-section" class="nav-link">Contacto</a></li>
         </ul>
       </nav>
@@ -44,11 +44,6 @@
     <section class="hero" id="hero-section">
       <div class="container hero-grid">
         <div class="hero-content">
-          <div class="badge-limited" id="limited-badge">
-            <span class="badge-dot"></span>
-            100% Orgánico & Ecológico - Departamento del Beni, Bolivia
-          </div>
-
           <h1 class="hero-title">
             Chocolate en Pasta <span class="gradient-text">Itonama & Cafés Beni</span>
           </h1>
@@ -56,6 +51,12 @@
           <p class="hero-description">
             Cacao nativo silvestre y granos de altura cultivados por pequeños agricultores amazónicos mediante procesos ecológicos que protegen la biodiversidad de Bolivia.
           </p>
+
+          <!-- Badge Reposicionado -->
+          <div class="badge-limited" id="limited-badge">
+            <span class="badge-dot"></span>
+            100% Orgánico & Ecológico - Departamento del Beni, Bolivia
+          </div>
 
           <div class="hero-cta-group">
             <a href="#lead-form-section" class="btn-primary" id="hero-cta-primary">
@@ -94,46 +95,7 @@
       </div>
     </section>
 
-    <!-- Historia -->
-    <section class="features-section" id="historia" style="background: var(--bg-secondary);">
-      <div class="container">
-        <div class="section-header">
-          <span class="section-subtitle">Historia & Origen</span>
-          <h2 class="section-title">El Tesoro Ecológico del Beni, Bolivia</h2>
-          <p class="section-desc">
-            El Chocolate en Pasta Itonama y los Cafés del Beni son producidos en las tierras fértiles de la Amazonía boliviana por pequeñas familias de agricultores.
-          </p>
-        </div>
-
-        <div class="features-grid">
-          <article class="feature-card">
-            <div class="icon-box">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            </div>
-            <h3 class="feature-title">Técnicas Ancestrales</h3>
-            <p class="feature-desc">Recolección manual de mazorcas de cacao silvestre Itonama y cerezas de café, seleccionadas grano a grano.</p>
-          </article>
-
-          <article class="feature-card">
-            <div class="icon-box">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-            </div>
-            <h3 class="feature-title">Biodiversidad Amazónica</h3>
-            <p class="feature-desc">Procesos agroforestales ecológicos sin agroquímicos, protegiendo la flora y fauna del Beni.</p>
-          </article>
-
-          <article class="feature-card">
-            <div class="icon-box">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-            </div>
-            <h3 class="feature-title">Comercio Justo</h3>
-            <p class="feature-desc">Impulsamos el desarrollo económico sostenible de las comunidades productoras amazónicas.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- Beneficios -->
+    <!-- 1. Beneficios (Reordenado) -->
     <section class="features-section" id="beneficios">
       <div class="container">
         <div class="section-header">
@@ -170,8 +132,38 @@
       </div>
     </section>
 
-    <!-- Galeria -->
-    <section class="features-section" id="galeria" style="background: var(--bg-secondary);">
+    <!-- 2. Productos (Reordenado) -->
+    <section class="features-section" id="productos" style="background: var(--bg-secondary);">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-subtitle">Catálogo</span>
+          <h2 class="section-title">Productos de la Cooperativa Beni</h2>
+        </div>
+
+        <div class="features-grid">
+          <article class="feature-card">
+            <div class="showcase-tag" style="margin-bottom: 0.75rem; display: inline-block;">100% Cacao Orgánico</div>
+            <h3 class="feature-title">Chocolate en Pasta Itonama (250g)</h3>
+            <p class="feature-desc">Elaborado con cacao silvestre amazónico molido a piedra. Perfecto para bebidas y repostería.</p>
+          </article>
+
+          <article class="feature-card">
+            <div class="showcase-tag" style="margin-bottom: 0.75rem; display: inline-block;">Tueste Medio de Altura</div>
+            <h3 class="feature-title">Café Beni Reserva Especial (500g)</h3>
+            <p class="feature-desc">Granos seleccionados del Beni. Perfil equilibrado con notas a chocolate amargo y avellanas.</p>
+          </article>
+
+          <article class="feature-card">
+            <div class="showcase-tag" style="margin-bottom: 0.75rem; display: inline-block;">Edición Limitada</div>
+            <h3 class="feature-title">Combo Degustación Amazónico</h3>
+            <p class="feature-desc">Incluye 1 Pasta de Chocolate Itonama + 1 Bolsa de Café Beni con empaque ecológico.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Galeria (Reordenado) -->
+    <section class="features-section" id="galeria">
       <div class="container">
         <div class="section-header">
           <span class="section-subtitle">Fotos</span>
@@ -219,37 +211,46 @@
       </div>
     </section>
 
-    <!-- Productos -->
-    <section class="features-section" id="productos">
+    <!-- 4. Historia (Reordenado) -->
+    <section class="features-section" id="historia" style="background: var(--bg-secondary);">
       <div class="container">
         <div class="section-header">
-          <span class="section-subtitle">Catálogo</span>
-          <h2 class="section-title">Productos de la Cooperativa Beni</h2>
+          <span class="section-subtitle">Historia & Origen</span>
+          <h2 class="section-title">El Tesoro Ecológico del Beni, Bolivia</h2>
+          <p class="section-desc">
+            El Chocolate en Pasta Itonama y los Cafés del Beni son producidos en las tierras fértiles de la Amazonía boliviana por pequeñas familias de agricultores.
+          </p>
         </div>
 
         <div class="features-grid">
           <article class="feature-card">
-            <div class="showcase-tag" style="margin-bottom: 0.75rem; display: inline-block;">100% Cacao Orgánico</div>
-            <h3 class="feature-title">Chocolate en Pasta Itonama (250g)</h3>
-            <p class="feature-desc">Elaborado con cacao silvestre amazónico molido a piedra. Perfecto para bebidas y repostería.</p>
+            <div class="icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <h3 class="feature-title">Técnicas Ancestrales</h3>
+            <p class="feature-desc">Recolección manual de mazorcas de cacao silvestre Itonama y cerezas de café, seleccionadas grano a grano.</p>
           </article>
 
           <article class="feature-card">
-            <div class="showcase-tag" style="margin-bottom: 0.75rem; display: inline-block;">Tueste Medio de Altura</div>
-            <h3 class="feature-title">Café Beni Reserva Especial (500g)</h3>
-            <p class="feature-desc">Granos seleccionados del Beni. Perfil equilibrado con notas a chocolate amargo y avellanas.</p>
+            <div class="icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <h3 class="feature-title">Biodiversidad Amazónica</h3>
+            <p class="feature-desc">Procesos agroforestales ecológicos sin agroquímicos, protegiendo la flora y fauna del Beni.</p>
           </article>
 
           <article class="feature-card">
-            <div class="showcase-tag" style="margin-bottom: 0.75rem; display: inline-block;">Edición Limitada</div>
-            <h3 class="feature-title">Combo Degustación Amazónico</h3>
-            <p class="feature-desc">Incluye 1 Pasta de Chocolate Itonama + 1 Bolsa de Café Beni con empaque ecológico.</p>
+            <div class="icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            </div>
+            <h3 class="feature-title">Comercio Justo</h3>
+            <p class="feature-desc">Impulsamos el desarrollo económico sostenible de las comunidades productoras amazónicas.</p>
           </article>
         </div>
       </div>
     </section>
 
-    <!-- Stats -->
+    <!-- 5. Stats -->
     <section class="stats-section" id="estadisticas">
       <div class="container">
         <div class="stats-grid">
@@ -273,7 +274,7 @@
       </div>
     </section>
 
-    <!-- Formulario Contacto / Leads -->
+    <!-- 6. Formulario Contacto / Leads -->
     <section class="lead-section" id="lead-form-section">
       <div class="container">
         <div class="lead-wrapper">
@@ -349,9 +350,10 @@
           <h4 class="footer-title">Navegación</h4>
           <ul class="footer-links">
             <li><a href="#hero-section">Inicio</a></li>
-            <li><a href="#historia">Sobre Nosotros</a></li>
             <li><a href="#beneficios">Beneficios</a></li>
+            <li><a href="#productos">Productos</a></li>
             <li><a href="#galeria">Galería</a></li>
+            <li><a href="#historia">Sobre Nosotros</a></li>
           </ul>
         </div>
 
