@@ -1,81 +1,34 @@
-/**
- * ==========================================================================
- * CAFÉS BENI - SUPABASE LEAD FORM SCRIPT (ES6)
- * Conexión nativa vía Fetch API a Supabase REST API
- * ==========================================================================
- */
-
-// --------------------------------------------------------------------------
-// 1. CONFIGURACIÓN DE CREDENCIALES DE SUPABASE
-// Reemplaza estas constantes con la URL y anon key de tu proyecto en Supabase
-// --------------------------------------------------------------------------
+// Config Supabase
 const SUPABASE_URL = "https://zpootrqwudwxbuqmcvay.supabase.co/rest/v1/"; 
 const SUPABASE_ANON_KEY = "sb_publishable_bo3XRSvtvOdhbOUvuTLCbQ_6596yd1s";
 
-// --------------------------------------------------------------------------
-// 2. FUNCIONES DE UTILIDAD & SANITIZACIÓN DE URL
-// --------------------------------------------------------------------------
-
-/**
- * Sanitiza y limpia la URL de Supabase para evitar duplicaciones de slashes
- * y remover sobrantes como '/rest/v1/' al final.
- * @param {string} url - URL cruda ingresada por el usuario
- * @returns {string} - Base URL limpia sin slashes finales ni rutas de API
- */
-function sanitizeSupabaseUrl(url) {
+// Limpia slashes o /rest/v1 duplicados en la url
+function cleanUrl(url) {
   if (!url) return "";
-  let cleanUrl = url.trim();
-  
-  // Remover slashes finales
-  cleanUrl = cleanUrl.replace(/\/+$/, "");
-  
-  // Remover fragmento /rest/v1 si fue incluido por error
-  cleanUrl = cleanUrl.replace(/\/rest\/v1\/?$/, "");
-  
-  return cleanUrl;
+  return url.trim().replace(/\/+$/, "").replace(/\/rest\/v1\/?$/, "");
 }
 
-/**
- * Genera de forma inteligente los encabezados (Headers) requeridos según el tipo de clave.
- * - Si es JWT ('eyJ...'): Incluye 'apikey' y 'Authorization: Bearer <key>'
- * - Si es la nueva clave publishable ('sb_publishable_...'): Envía ÚNICAMENTE 'apikey' para evitar HTTP 401.
- * 
- * @param {string} apiKey - Clave pública anon de Supabase
- * @returns {Record<string, string>} Objeto de encabezados para fetch
- */
-function getSupabaseHeaders(apiKey) {
+// Retorna headers segun tipo de key de supabase
+function buildHeaders(key) {
+  const k = key.trim();
   const headers = {
     "Content-Type": "application/json",
     "Prefer": "return=minimal"
   };
 
-  const key = apiKey.trim();
-
-  if (key.startsWith("sb_publishable_")) {
-    // Nueva clave publicable de Supabase: Únicamente enviar apikey header
-    headers["apikey"] = key;
+  if (k.startsWith("sb_publishable_")) {
+    headers["apikey"] = k;
   } else {
-    // Clave JWT estándar (eyJ...): Enviar apikey y Authorization Bearer
-    headers["apikey"] = key;
-    headers["Authorization"] = `Bearer ${key}`;
+    headers["apikey"] = k;
+    headers["Authorization"] = `Bearer ${k}`;
   }
-
   return headers;
 }
 
-/**
- * Valida la sintaxis de un correo electrónico mediante Expresión Regular (Regex)
- * @param {string} email 
- * @returns {boolean}
- */
-function isValidEmail(email) {
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return regex.test(email.trim());
+function validEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 }
 
-// --------------------------------------------------------------------------
-// 3. SELECCIÓN DE ELEMENTOS DEL DOM
-// --------------------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("leadForm");
   const submitBtn = document.getElementById("submitBtn");
@@ -83,33 +36,32 @@ document.addEventListener("DOMContentLoaded", () => {
   const alertBanner = document.getElementById("alertBanner");
   const alertText = document.getElementById("alertText");
   const alertIcon = document.getElementById("alertIcon");
+  const toggleGalleryBtn = document.getElementById("toggleGalleryBtn");
+  const extraPhotos = document.querySelectorAll(".gallery-extra");
+
+  // Galeria toggle
+  let showMore = false;
+  if (toggleGalleryBtn && extraPhotos.length > 0) {
+    toggleGalleryBtn.addEventListener("click", () => {
+      showMore = !showMore;
+      extraPhotos.forEach(card => {
+        card.style.display = showMore ? "block" : "none";
+      });
+      const txt = toggleGalleryBtn.querySelector("span");
+      if (txt) txt.textContent = showMore ? "Ocultar fotos" : "Ver más fotos del cultivo";
+    });
+  }
 
   if (!form || !submitBtn) return;
 
-  // ------------------------------------------------------------------------
-  // 4. MANEJO VISUAL DE ALERTAS Y BANNERS
-  // ------------------------------------------------------------------------
-  function showAlert(message, type = "error") {
-    alertBanner.className = `banner-alert active banner-${type}`;
-    alertText.textContent = message;
+  function showAlert(msg, isSuccess = false) {
+    alertBanner.className = `banner-alert active ${isSuccess ? 'banner-success' : 'banner-error'}`;
+    alertText.textContent = msg;
+    
+    alertIcon.innerHTML = isSuccess 
+      ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px;"><polyline points="20 6 9 17 4 12"></polyline></svg>`
+      : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
 
-    if (type === "success") {
-      alertIcon.innerHTML = `
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;">
-          <polyline points="20 6 9 17 4 12"></polyline>
-        </svg>
-      `;
-    } else {
-      alertIcon.innerHTML = `
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="12" y1="8" x2="12" y2="12"></line>
-          <line x1="12" y1="16" x2="12.01" y2="16"></line>
-        </svg>
-      `;
-    }
-
-    // Auto desplazamiento al banner de alerta
     alertBanner.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
@@ -119,134 +71,78 @@ document.addEventListener("DOMContentLoaded", () => {
     alertIcon.innerHTML = "";
   }
 
-  // ------------------------------------------------------------------------
-  // 5. CAMBIO DE ESTADO DEL BOTÓN DE ENVÍO (LOADING / DISABLED)
-  // ------------------------------------------------------------------------
-  function setLoadingState(isLoading) {
-    if (isLoading) {
-      submitBtn.disabled = true;
+  function setLoading(loading) {
+    submitBtn.disabled = loading;
+    if (loading) {
       submitBtn.classList.add("loading");
-      btnText.textContent = "Enviando solicitud...";
+      btnText.textContent = "Enviando...";
     } else {
-      submitBtn.disabled = false;
       submitBtn.classList.remove("loading");
-      btnText.textContent = "Recibir Muestra Gratuita";
+      btnText.textContent = "Enviar Mensaje / Suscribirse";
     }
   }
 
-  // ------------------------------------------------------------------------
-  // 6. EVENTO SUBMIT DEL FORMULARIO DE LEADS
-  // ------------------------------------------------------------------------
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
     hideAlert();
 
-    // Obtener y limpiar datos de entrada
     const nombre = document.getElementById("nombre")?.value.trim() || "";
     const correo = document.getElementById("correo")?.value.trim() || "";
     const telefono = document.getElementById("telefono")?.value.trim() || "";
     const mensaje = document.getElementById("mensaje")?.value.trim() || "";
 
-    // Validation Client-Side
     if (!nombre) {
-      showAlert("Por favor, ingresa tu nombre completo.", "error");
+      showAlert("Por favor ingresa tu nombre completo.");
       document.getElementById("nombre")?.focus();
       return;
     }
 
-    if (!correo || !isValidEmail(correo)) {
-      showAlert("Por favor, ingresa un correo electrónico válido (ej. usuario@dominio.com).", "error");
+    if (!correo || !validEmail(correo)) {
+      showAlert("Ingresa un correo electrónico válido.");
       document.getElementById("correo")?.focus();
       return;
     }
 
-    // Verificar si las claves por defecto aún no se reemplazaron
-    if (SUPABASE_URL.includes("tu-proyecto") || SUPABASE_ANON_KEY.includes("tu-anon")) {
-      console.warn("⚠️ [Cafés Beni Dev Warning] Las credenciales de Supabase son placeholders por defecto.");
-    }
-
-    // Activar estado de carga
-    setLoadingState(true);
+    setLoading(true);
 
     try {
-      // Sanitizar la URL y construir el endpoint de la REST API de Supabase
-      const baseUrl = sanitizeSupabaseUrl(SUPABASE_URL);
-      const endpoint = `${baseUrl}/rest/v1/leads`;
+      const base = cleanUrl(SUPABASE_URL);
+      const url = `${base}/rest/v1/leads`;
+      const headers = buildHeaders(SUPABASE_ANON_KEY);
 
-      // Obtener los encabezados autenticados según el tipo de clave
-      const headers = getSupabaseHeaders(SUPABASE_ANON_KEY);
-
-      // Payload JSON a insertar en la tabla 'leads'
-      const payload = {
+      const body = JSON.stringify({
         nombre: nombre,
         correo: correo,
         telefono: telefono || null,
         mensaje: mensaje || null
-      };
-
-      console.log("🚀 [Supabase Request] Enviando POST a:", endpoint);
-
-      // Realizar petición Fetch a Supabase REST API
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(payload)
       });
 
-      // Captura analítica de respuesta HTTP
-      if (response.ok) {
-        // Respuesta exitosa (200 OK / 201 Created / 204 No Content)
-        console.log("✅ [Supabase Success] Lead registrado correctamente en la base de datos.");
-        
-        showAlert("¡Excelente! Hemos recibido tu solicitud. Te contactaremos muy pronto para enviarte tu muestra gratis de Cafés Beni. ☕", "success");
-        
-        // Reseteo del formulario
+      const res = await fetch(url, {
+        method: "POST",
+        headers: headers,
+        body: body
+      });
+
+      if (res.ok) {
+        showAlert("¡Gracias por registrarte! Nos pondremos en contacto contigo pronto.", true);
         form.reset();
       } else {
-        // Captura detallada de errores HTTP
-        const status = response.status;
-        let errorData = null;
-        try {
-          errorData = await response.json();
-        } catch (e) {
-          errorData = { message: await response.text() };
-        }
+        const errData = await res.json().catch(() => ({}));
+        console.error("Error Supabase:", res.status, errData);
 
-        console.error(`❌ [Supabase HTTP Error ${status}] Detalle en consola F12:`, errorData);
-
-        let errorMessage = "Ocurrió un error inesperado al procesar tu solicitud.";
-
-        // Detectar si es un error de RLS (Row Level Security)
-        if (errorData?.code === "42501" || errorData?.message?.includes("row-level security")) {
-          errorMessage = "Error (RLS 42501): Permiso denegado por Row Level Security. Recuerda ejecutar el script SQL en el SQL Editor de Supabase.";
+        if (errData?.code === "42501" || errData?.message?.includes("row-level security")) {
+          showAlert("Error de permisos RLS en la tabla. Ejecuta el script SQL en Supabase.");
+        } else if (res.status === 404) {
+          showAlert("Tabla 'leads' no encontrada en la base de datos.");
         } else {
-          switch (status) {
-            case 400:
-              errorMessage = `Error (400 Bad Request): Revisa los datos o columnas de la tabla. (${errorData?.message || ''})`;
-              break;
-            case 401:
-              errorMessage = "Error (401 Unauthorized): Clave anon public key de Supabase inválida o permisos denegados por RLS.";
-              break;
-            case 403:
-              errorMessage = "Error (403 Forbidden): Permiso denegado por Row Level Security (RLS) en Supabase.";
-              break;
-            case 404:
-              errorMessage = "Error (404 Not Found): La tabla 'leads' no existe en tu base de datos de Supabase.";
-              break;
-            default:
-              errorMessage = `Error (${status}): ${errorData?.hint || errorData?.message || 'Fallo en la comunicación con Supabase.'}`;
-          }
+          showAlert(`No se pudo enviar la solicitud (${res.status}). Revisa la consola.`);
         }
-
-        showAlert(errorMessage, "error");
       }
-
-    } catch (networkError) {
-      console.error("🔥 [Network/Fetch Exception]:", networkError);
-      showAlert(`Error de conexión: No se pudo conectar con el servidor (${networkError.message}). Revisa tu conexión a internet o la URL de Supabase.`, "error");
+    } catch (err) {
+      console.error("Error de red:", err);
+      showAlert("Error de conexión con el servidor. Revisa tu internet.");
     } finally {
-      // Restaurar botón de envío
-      setLoadingState(false);
+      setLoading(false);
     }
   });
 });
